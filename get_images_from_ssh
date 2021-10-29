@@ -1,0 +1,25 @@
+#!/bin/bash
+# Esse script baixa todas as imagens de uma pasta em um servidor ssh
+
+pass='' # Senha do user
+address='' # user@endereço_do_server
+folder='' # Pasta com as imagens
+
+echo "Procurando arquivos de imagens"
+
+arquivos=$(sshpass -p $pass ssh $address "find $folder -exec file {} \;| grep 'image' | cut -d ':' -f 1")
+
+echo "Pronto!"
+
+
+for i in $arquivos;
+do
+	# Separa o nome do caminho
+	nome=$(echo $i | rev | cut -d "/" -f 1 | rev)
+
+	echo "Baixando $nome. Endereco=$i"
+	sshpass -p $pass scp $address:$i $nome
+
+done
+
+echo "Terminou!"
