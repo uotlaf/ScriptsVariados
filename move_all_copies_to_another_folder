@@ -1,0 +1,33 @@
+#!/bin/bash
+
+lista=$(ls)
+number='^[0-9]+$'
+char_1=0
+mkdir -p copias
+
+for i in $lista; do
+	j=0
+	char_1=0
+	char_x=0
+	char_2=0
+	while [ "$j" -lt "${#i}" ]
+	do
+		if [[ ${i:j:1} =~ $number ]]; then
+			if [ $char_1 == 0 ]; then
+				char_1=1
+			elif [ $char_1 == 1 -a $char_x == 1 ]; then
+				char_2=1
+			fi
+		elif [ ${i:j:1} == 'x' ]; then
+			if [ $char_1 == 1 ]; then
+				char_x=1
+			fi
+		fi
+		j=$(expr $j + 1)
+	done
+	echo "1=$char_1 , x=$char_x , 2=$char_2"
+	if [ $char_1 == 1 -a $char_x == 1 -a $char_2 == 1 ]; then
+		mv $i copias/$i
+	fi
+done
+			
